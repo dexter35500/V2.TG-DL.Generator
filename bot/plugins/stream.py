@@ -1,13 +1,15 @@
 import logging
-from bot import StreamBot
 from vars import Var
-from pyrogram import filters
+from pyrogram import filters, Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from utils.file_properties import get_file_ids
 from utils.human_readable import humanbytes
 
-@StreamBot.on_message(filters.private & (filters.document | filters.video | filters.audio))
-async def stream_handler(client: StreamBot, message: Message):
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Usamos el decorador genérico de Pyrogram para capturar los archivos
+@filters.on_message(filters.private & (filters.document | filters.video | filters.audio))
+async def stream_handler(client: Client, message: Message):
     try:
         # Reenvío automático al canal de log (BIN_CHANNEL)
         log_msg = await message.forward(chat_id=Var.BIN_CHANNEL)
@@ -41,5 +43,5 @@ async def stream_handler(client: StreamBot, message: Message):
             quote=True
         )
     except Exception as e:
-        logging.error(e, exc_info=True)
+        logging.error(f"Error procesando el archivo de streaming: {e}", exc_info=True)
         await message.reply_text(f"Error: {e}")
