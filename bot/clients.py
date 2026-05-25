@@ -1,5 +1,6 @@
 import logging
-from pyrogram import Client
+# Importamos directamente desde el core para evitar parches de bucle obsoletos
+from pyrogram.client import Client
 from vars import Var
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -18,7 +19,7 @@ class StreamBot(Client):
     async def start(self):
         await super().start()
         me = await self.get_me()
-        logging.info(f"¡Bot @{me.username} iniciado con éxito!")
+        logging.info(f"¡Bot @{me.username} en línea y listo!")
 
     async def stop(self, *args):
         await super().stop()
